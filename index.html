@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0c4854">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="North Pole">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="apple-touch-icon" href="./icons/icon-192.png">
+<title>Ethan's North Pole Tree Countdown</title>
+<style>
+:root {
+  --bg:#0d4b56; --paper:#fff8e7; --green:#087443; --red:#db2f2f; --gold:#f5bd3b;
+  --ink:#173a36; --muted:#60706d; --line:#e6dfcf;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:radial-gradient(circle at top,#155d68 0,#0d4b56 45%,#07353e 100%);font-family:ui-rounded,system-ui,-apple-system,BlinkMacSystemFont,"SF Pro Rounded","Segoe UI",sans-serif;color:var(--ink);min-height:100%}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;background-image:radial-gradient(#fff 1.2px,transparent 1.2px);background-size:30px 30px;opacity:.28}
+.wrap{width:min(920px,100%);margin:0 auto;padding:calc(env(safe-area-inset-top) + 18px) 18px calc(env(safe-area-inset-bottom) + 30px)}
+.topbar{display:flex;align-items:center;justify-content:space-between;color:#fff;gap:14px;margin-bottom:18px}
+.brand{display:flex;gap:12px;align-items:center;font-weight:900;letter-spacing:.08em}
+.elf{width:56px;height:56px;border-radius:50%;display:grid;place-items:center;background:#fff;border:5px solid #7aa1a8;font-size:30px}
+.status{padding:12px 18px;border:2px solid rgba(255,255,255,.25);border-radius:999px;background:rgba(255,255,255,.12);font-weight:800}
+.card{background:var(--paper);border-radius:28px;box-shadow:0 18px 50px rgba(0,0,0,.22);overflow:hidden;border:1px solid rgba(255,255,255,.25)}
+.candy{height:26px;background:repeating-linear-gradient(135deg,#fff 0 32px,#fff 32px 48px,#d92525 48px 80px,#fff 80px 96px,#087443 96px 128px)}
+.inner{padding:28px}
+.lockpill{display:inline-flex;align-items:center;gap:8px;padding:11px 18px;border-radius:999px;background:#ffe1df;color:#982323;font-weight:900;letter-spacing:.05em;border:2px solid #ffc4c0}
+h1{font-size:clamp(42px,7vw,72px);line-height:.95;margin:24px 0 12px;color:var(--red);text-shadow:0 4px #eadfc8;letter-spacing:.02em}
+.subtitle{font-size:clamp(22px,4vw,34px);font-weight:900;color:var(--green);margin-bottom:8px}
+.official{color:var(--muted);font-weight:700;font-size:18px;margin-bottom:24px}
+.countgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.countbox{background:#fff;border:3px solid #ece5d8;border-radius:22px;padding:18px 8px;text-align:center;box-shadow:0 8px 0 #e7dfce}
+.num{font-size:clamp(30px,6vw,58px);font-weight:1000;color:var(--green);font-variant-numeric:tabular-nums}
+.lbl{font-size:13px;font-weight:900;letter-spacing:.12em;color:#68707d}
+.meterrow{display:flex;justify-content:space-between;align-items:end;margin-top:28px;font-weight:900;color:#4c5f5b}
+.meter{height:22px;border:4px solid #fff;border-radius:999px;background:#ddd7c9;box-shadow:0 0 0 1px #ded6c5;overflow:hidden;margin-top:8px}
+.fill{height:100%;width:0;background:linear-gradient(90deg,#f5bd3b,#e0562f)}
+.rule{margin-top:24px;background:#fff0bd;border:3px solid #efbf49;border-radius:24px;padding:18px;font-size:18px;line-height:1.5;font-weight:750}
+.mission{margin-top:24px;background:#fff;border:3px solid #ecd9a3;border-radius:24px;padding:22px}
+.missiontag{display:inline-block;padding:6px 10px;border-radius:999px;background:var(--red);color:#fff;font-size:12px;font-weight:1000;letter-spacing:.08em}
+.mission h2{font-size:clamp(28px,5vw,42px);color:var(--green);margin:12px 0 8px}
+.mission p{font-size:19px;line-height:1.55;margin:0 0 18px}
+.complete{appearance:none;border:0;border-radius:16px;padding:14px 18px;background:var(--green);color:#fff;font-weight:950;font-size:17px;box-shadow:0 6px 0 #055332;cursor:pointer;width:100%}
+.complete.done{background:#d7eadf;color:#1d6a44;box-shadow:none}
+.progress{margin-top:24px;background:#f8f4e8;border-radius:20px;padding:18px}
+.progresshead{display:flex;justify-content:space-between;font-weight:900}
+.dots{display:grid;grid-template-columns:repeat(8,1fr);gap:8px;margin-top:12px}
+.dot{aspect-ratio:1;border-radius:10px;background:#ded9cd;display:grid;place-items:center;font-size:14px;font-weight:900;color:#7a7a74}
+.dot.today{outline:3px solid var(--gold);background:#fff}
+.dot.done{background:#bde1ca;color:#0f6c3f}
+.archive{margin-top:18px}
+.archive summary{cursor:pointer;font-weight:900;color:#325e57;padding:12px 0}
+.list{display:grid;gap:10px}
+.row{display:grid;grid-template-columns:92px 1fr auto;gap:12px;align-items:center;padding:12px;background:#fff;border:1px solid #e5dece;border-radius:14px}
+.row.locked{opacity:.48}
+.row .date{font-weight:900;color:#6d706d}
+.row .title{font-weight:850}
+.small{font-size:13px;color:#777}
+.unlock{text-align:center;padding:35px 10px}
+.unlock h1{color:var(--green);text-shadow:none}
+.confetti{font-size:44px;letter-spacing:10px}
+@media(max-width:620px){
+ .wrap{padding-left:10px;padding-right:10px}
+ .inner{padding:20px}
+ .countgrid{gap:7px}
+ .countbox{padding:14px 3px;border-radius:18px}
+ .num{font-size:34px}
+ .lbl{font-size:10px}
+ .row{grid-template-columns:72px 1fr}
+ .row .state{display:none}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <div class="brand"><div class="elf">🧝</div><div>NORTH POLE<br>TREE CONTROL</div></div>
+    <div class="status" id="status">Checking calendar…</div>
+  </div>
+
+  <main class="card">
+    <div class="candy"></div>
+    <div class="inner" id="app">
+      <div class="lockpill">🔴 TREE LOCK ACTIVE</div>
+      <h1>NOT YET, ETHAN! 🎄🔒</h1>
+      <div class="subtitle">Christmas Tree Authorization Begins November 1</div>
+      <div class="official">Official message from Elf Arthur, North Pole Scheduling Department</div>
+
+      <div class="countgrid">
+        <div class="countbox"><div class="num" id="days">--</div><div class="lbl">DAYS</div></div>
+        <div class="countbox"><div class="num" id="hours">--</div><div class="lbl">HOURS</div></div>
+        <div class="countbox"><div class="num" id="minutes">--</div><div class="lbl">MINUTES</div></div>
+        <div class="countbox"><div class="num" id="seconds">--</div><div class="lbl">SECONDS</div></div>
+      </div>
+
+      <div class="meterrow"><div>October patience meter</div><div id="meterText">0%</div></div>
+      <div class="meter"><div class="fill" id="fill"></div></div>
+
+      <div class="rule">🚨 <b style="color:#c92c2c">North Pole rule:</b> The tree stays packed until November — but Elf Arthur has assigned one tiny Christmas mission every day.</div>
+
+      <section class="mission" id="missionBox">
+        <span class="missiontag">TODAY</span>
+        <h2>Loading today's mission…</h2>
+      </section>
+
+      <section class="progress">
+        <div class="progresshead"><div>Mission Progress</div><div id="progressText">0 / 23</div></div>
+        <div class="dots" id="dots"></div>
+      </section>
+
+      <details class="archive">
+        <summary>🗂 North Pole Mission File</summary>
+        <div class="list" id="missionList"></div>
+      </details>
+    </div>
+  </main>
+</div>
+
+<script>
+const missions = [{"date": "2026-10-09", "title": "Christmas Color Hunt", "body": "Find 5 red things, 5 green things, and 3 shiny things around the house. Report back to Elf Arthur."}, {"date": "2026-10-10", "title": "North Pole Weather Report", "body": "Look outside and give Arthur a 3-part weather report: sky, temperature feeling, and wind."}, {"date": "2026-10-11", "title": "Snowflake Lab", "body": "Cut or draw 3 different snowflakes. Which one has the most points?"}, {"date": "2026-10-12", "title": "Reindeer Math", "body": "If 8 reindeer each need 2 carrots, how many carrots are needed? Then invent one harder reindeer math problem."}, {"date": "2026-10-13", "title": "Secret Kindness Mission", "body": "Do one helpful thing without being asked. Arthur says stealth kindness earns extra elf points."}, {"date": "2026-10-14", "title": "LEGO Sleigh Engineering", "body": "Build a tiny sleigh from LEGO or blocks that can carry at least 3 small objects."}, {"date": "2026-10-15", "title": "Ornament Inspector", "body": "Choose 5 ornaments you like. Sort them by size, color, or shape — but do NOT put them on the tree yet."}, {"date": "2026-10-16", "title": "Detective Hiss: Missing Bell Case", "body": "Hide a small bell-like object or coin. Write 3 clues to help someone find it."}, {"date": "2026-10-17", "title": "Elf Balance Test", "body": "Stand on one foot for 20 seconds. Try both sides. Which side is easier?"}, {"date": "2026-10-18", "title": "North Pole Codebreaker", "body": "Decode this: 20-18-5-5 = TREE. Now encode the word ELF using A=1, B=2, C=3..."}, {"date": "2026-10-19", "title": "Gift Wrap Geometry", "body": "Find a box. Name as many shapes, faces, edges, and corners as you can."}, {"date": "2026-10-20", "title": "Reindeer Route Planner", "body": "Draw the shortest route from your room to the front door with 3 checkpoints."}, {"date": "2026-10-21", "title": "Christmas Sound Hunt", "body": "Find or make 5 different sounds that could belong in Santa's workshop."}, {"date": "2026-10-22", "title": "Tree Height Science", "body": "Predict how tall the Christmas tree is. Measure a family member or object to help estimate."}, {"date": "2026-10-23", "title": "Elf Memory Challenge", "body": "Look at 10 small objects for 30 seconds, cover them, and name as many as you can remember."}, {"date": "2026-10-24", "title": "North Pole Snack Design", "body": "Invent a snack for elves. Give it a name and list 3 ingredients."}, {"date": "2026-10-25", "title": "Christmas Story Starter", "body": "Finish this sentence out loud: 'At exactly midnight, Detective Hiss heard a tiny jingle coming from...'"}, {"date": "2026-10-26", "title": "Sleigh Cargo Test", "body": "Choose 6 small objects. Decide which are safest to pack at the bottom, middle, and top of a sleigh."}, {"date": "2026-10-27", "title": "Holiday Pattern Mission", "body": "Create a repeating pattern using 3 symbols, colors, or objects. Make it at least 12 steps long."}, {"date": "2026-10-28", "title": "Elf Fitness Check", "body": "Do 10 jumping jacks, 10 marching knees, and 10 slow squats. Arthur calls this Sleigh Crew Training."}, {"date": "2026-10-29", "title": "Tree Day Planning Board", "body": "Choose where the tree will go and make a simple 3-step setup plan. Planning only — still locked!"}, {"date": "2026-10-30", "title": "North Pole Final Supplies Check", "body": "Make a checklist: tree, lights, ornaments, topper, skirt, hooks. Tick what is ready."}, {"date": "2026-10-31", "title": "FINAL INSPECTION: Tree Authorization Eve", "body": "Do the final safety check: clear the tree area, find the lights, and make sure everything is ready for tomorrow. Do NOT assemble the tree yet."}];
+const target = new Date(2026, 10, 1, 0, 0, 0); // local Nov 1, 2026
+const start = new Date(2026, 9, 9, 0, 0, 0);
+const KEY = "ethan_north_pole_missions_v1";
+const saved = JSON.parse(localStorage.getItem(KEY) || "{}");
+
+function ymd(d) {
+  const y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,"0"), day=String(d.getDate()).padStart(2,"0");
+  return `${y}-${m}-${day}`;
+}
+function parseLocal(s) {
+  const [y,m,d]=s.split("-").map(Number);
+  return new Date(y,m-1,d,0,0,0);
+}
+function completedCount() { return missions.filter(m => saved[m.date]).length; }
+
+function renderMission(now) {
+  const today = ymd(now);
+  let m = missions.find(x => x.date === today);
+  if (!m && now < start) m = null;
+  if (!m && now >= start && now < target) {
+    const prior = missions.filter(x => parseLocal(x.date) <= now);
+    m = prior[prior.length-1] || missions[0];
+  }
+  const box = document.getElementById("missionBox");
+  if (now >= target) return;
+  if (!m) {
+    box.innerHTML = `<span class="missiontag">STANDBY</span><h2>Mission program begins October 9.</h2><p>Elf Arthur is still loading the mission files.</p>`;
+    return;
+  }
+  const done = !!saved[m.date];
+  box.innerHTML = `
+    <span class="missiontag">${m.date===today ? "TODAY" : "LATEST AVAILABLE"}</span>
+    <h2>🎁 ${m.title}</h2>
+    <p>${m.body}</p>
+    <button class="complete ${done?"done":""}" id="completeBtn">${done ? "⭐ Mission Complete!" : "Mark Mission Complete ⭐"}</button>
+  `;
+  document.getElementById("completeBtn").onclick = () => {
+    saved[m.date] = !saved[m.date];
+    localStorage.setItem(KEY, JSON.stringify(saved));
+    renderAll(new Date());
+  };
+}
+
+function renderDots(now) {
+  const today=ymd(now);
+  document.getElementById("dots").innerHTML = missions.map((m,i)=>{
+    const cl = [saved[m.date]?"done":"", m.date===today?"today":""].join(" ");
+    return `<div class="dot ${cl}" title="${m.title}">${saved[m.date]?"✓":i+1}</div>`;
+  }).join("");
+  document.getElementById("progressText").textContent = `${completedCount()} / ${missions.length}`;
+}
+
+function renderList(now) {
+  const today=ymd(now);
+  document.getElementById("missionList").innerHTML = missions.map(m=>{
+    const d=parseLocal(m.date);
+    const future=d>new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const title=future ? "🔒 CLASSIFIED" : m.title;
+    const state=saved[m.date] ? "⭐" : (future ? "🔒" : "○");
+    return `<div class="row ${future?"locked":""}">
+      <div class="date">${m.date.slice(5)}</div>
+      <div><div class="title">${title}</div><div class="small">${future?"Future mission remains sealed by Elf Arthur.":m.body}</div></div>
+      <div class="state">${state}</div>
+    </div>`;
+  }).join("");
+}
+
+function renderCountdown(now) {
+  const status=document.getElementById("status");
+  if (now >= target) {
+    status.textContent="TREE AUTHORIZED ✅";
+    document.getElementById("app").innerHTML = `
+      <div class="unlock">
+        <div class="confetti">🎉🎄🎁✨</div>
+        <h1>TREE AUTHORIZED!</h1>
+        <div class="subtitle">GO, ETHAN! November 1 has arrived.</div>
+        <p style="font-size:22px;line-height:1.55">Elf Arthur has officially unlocked the Christmas tree. North Pole scheduling is safe. Proceed with decoration.</p>
+        <div style="font-size:80px;margin-top:18px">🧝✅🎄</div>
+      </div>`;
+    return false;
+  }
+  const diff=target-now;
+  const days=Math.floor(diff/86400000);
+  const hours=Math.floor(diff%86400000/3600000);
+  const mins=Math.floor(diff%3600000/60000);
+  const secs=Math.floor(diff%60000/1000);
+  document.getElementById("days").textContent=String(days).padStart(2,"0");
+  document.getElementById("hours").textContent=String(hours).padStart(2,"0");
+  document.getElementById("minutes").textContent=String(mins).padStart(2,"0");
+  document.getElementById("seconds").textContent=String(secs).padStart(2,"0");
+  status.textContent="Calendar verified 🔒";
+  const total=target-start;
+  const elapsed=Math.max(0,Math.min(total,now-start));
+  const pct=Math.round(elapsed/total*100);
+  document.getElementById("fill").style.width=pct+"%";
+  document.getElementById("meterText").textContent=pct+"%";
+  return true;
+}
+
+function renderAll(now) {
+  if (!renderCountdown(now)) return;
+  renderMission(now);
+  renderDots(now);
+  renderList(now);
+}
+renderAll(new Date());
+setInterval(()=>renderAll(new Date()),1000);
+
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));
+}
+</script>
+</body>
+</html>
